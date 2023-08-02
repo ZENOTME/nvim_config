@@ -49,7 +49,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
     vim.keymap.set('n', '<leader>fm', function() vim.lsp.buf.format { async = true } end, bufopts)
     vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
-
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
     -- inlay_hints.on_attach(client, bufnr)
 end 
 
