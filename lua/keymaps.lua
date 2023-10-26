@@ -5,7 +5,6 @@ local opts = {
     silent = true,       -- do not show message
 }
 
-
 -- Hint: see `:h vim.map.set()`
 -- The keymap except lsp related
 
@@ -14,6 +13,7 @@ vim.keymap.set('i', '<C-h>', '<Left>', opts)
 vim.keymap.set('i', '<C-j>', '<Down>', opts)
 vim.keymap.set('i', '<C-k>', '<Up>', opts)
 vim.keymap.set('i', '<C-l>', '<Right>', opts)
+vim.keymap.set('i', '<C-c>', '<ESC>', opts)
 
 -- Better window navigation
 vim.keymap.set('n', '<Tab>h', '<C-w>h', opts)
