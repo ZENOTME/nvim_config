@@ -50,66 +50,31 @@ rt.setup({
   },
 })
 
--- C++ 
-local cl = require("lspconfig").clangd
-cl.setup({
-  on_attach = function(client, bufnr)
-    local buf_opts = { buffer = bufnr, silent = true }
-    -- Gernal
-    general_on_attach(client, buf_opts)
+-- Other LSP
+local lspconfig = require('lspconfig')
+require("mason-lspconfig").setup_handlers({
+  function (server_name)
+    require("lspconfig")[server_name].setup{
+        on_attach = function(client, bufnr)
+            local buf_opts = { buffer = bufnr, silent = true }
+            -- Gernal
+            general_on_attach(client, buf_opts)
+        end,
+    }
   end,
-  cmd = {
-    "clangd",
-    "--offset-encoding=utf-16",
-  },
+  -- C++ 
+  ["clangd"] = function ()
+    lspconfig.clangd.setup {
+      on_attach = function(client, bufnr)
+        local buf_opts = { buffer = bufnr, silent = true }
+        -- Gernal
+        general_on_attach(client, buf_opts)
+      end,
+      cmd = {
+        "clangd",
+        "--offset-encoding=utf-16",
+      }
+    }
+  end
 })
 
--- CMake
-local cm = require("lspconfig").cmake
-cm.setup({
-  on_attach = function(client, bufnr)
-    local buf_opts = { buffer = bufnr, silent = true }
-    -- Gernal
-    general_on_attach(client, buf_opts)
-  end,
-})
-
--- Python
-local py = require("lspconfig").pyright
-py.setup({
-  on_attach = function(client, bufnr)
-    local buf_opts = { buffer = bufnr, silent = true }
-    -- Gernal
-    general_on_attach(client, buf_opts)
-  end,
-})
-
--- lua
-local lua = require("lspconfig").lua_ls
-lua.setup({
-  on_attach = function(client, bufnr)
-    local buf_opts = { buffer = bufnr, silent = true }
-    -- Gernal
-    general_on_attach(client, buf_opts)
-  end,
-})
-
--- bash
-local bash = require("lspconfig").bashls
-bash.setup({
-  on_attach = function(client, bufnr)
-    local buf_opts = { buffer = bufnr, silent = true }
-    -- Gernal
-    general_on_attach(client, buf_opts)
-  end,
-})
-
--- go
-local go = require("lspconfig").gopls
-go.setup({
-  on_attach = function(client, bufnr)
-    local buf_opts = { buffer = bufnr, silent = true }
-    -- Gernal
-    general_on_attach(client, buf_opts)
-  end,
-})
