@@ -7,6 +7,9 @@ require('mason').setup({
         }
     }
 })
+require("mason-lspconfig").setup {
+    ensure_installed = { "lua_ls", "rust_analyzer", "clangd", "cmake", "pyright", "bashls", "gopls" },
+}
 
 local opts = { noremap = true, silent = true }
 -- Genernal Keymap
@@ -94,6 +97,16 @@ lua.setup({
 -- bash
 local bash = require("lspconfig").bashls
 bash.setup({
+  on_attach = function(client, bufnr)
+    local buf_opts = { buffer = bufnr, silent = true }
+    -- Gernal
+    general_on_attach(client, buf_opts)
+  end,
+})
+
+-- go
+local go = require("lspconfig").gopls
+go.setup({
   on_attach = function(client, bufnr)
     local buf_opts = { buffer = bufnr, silent = true }
     -- Gernal
