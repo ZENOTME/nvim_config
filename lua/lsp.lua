@@ -8,7 +8,7 @@ require('mason').setup({
     }
 })
 require("mason-lspconfig").setup {
-    ensure_installed = { "lua_ls", "rust_analyzer", "clangd", "cmake", "pyright", "bashls", "gopls" },
+    ensure_installed = { "lua_ls", "clangd", "cmake", "pyright", "bashls", "gopls" },
 }
 
 local opts = { noremap = true, silent = true }
@@ -32,49 +32,62 @@ end
 
 -- Set for test
 require("toggleterm").setup({
-  direction = "float",
+    direction = "float",
 })
 
 -- Rust Analyzer
 local rt = require("rust-tools")
 rt.setup({
-  tools = { -- rust-tools options
-    executor = require("rust-tools.executors").toggleterm,
-  },
-  server = {
-    on_attach = function(client, bufnr)
-      -- Gernal
-      general_on_attach(client, bufnr)
-      vim.keymap.set("n", "<leader>tt", rt.runnables.runnables, opts)
-    end,
-  },
+    tools = { -- rust-tools options
+        executor = require("rust-tools.executors").toggleterm,
+    },
+    server = {
+        settings = {
+            ["rust-analyzer"] = {
+                cargo = {
+                    -- allFeatures = true,
+                },
+            },
+        },
+        on_attach = function(client, bufnr)
+            -- Gernal
+            general_on_attach(client, bufnr)
+            vim.keymap.set("n", "<leader>tt", rt.runnables.runnables, opts)
+        end,
+    },
 })
 
 -- Other LSP
 local lspconfig = require('lspconfig')
 require("mason-lspconfig").setup_handlers({
-  function (server_name)
-    require("lspconfig")[server_name].setup{
-        on_attach = function(client, bufnr)
-            local buf_opts = { buffer = bufnr, silent = true }
-            -- Gernal
-            general_on_attach(client, buf_opts)
-        end,
-    }
-  end,
-  -- C++ 
-  ["clangd"] = function ()
-    lspconfig.clangd.setup {
-      on_attach = function(client, bufnr)
-        local buf_opts = { buffer = bufnr, silent = true }
-        -- Gernal
-        general_on_attach(client, buf_opts)
-      end,
-      cmd = {
-        "clangd",
-        "--offset-encoding=utf-16",
-      }
-    }
-  end
+    function(server_name)
+        if server_name == "rust_analyzer" then
+            return
+        end
+        require("lspconfig")[server_name].setup {
+            on_attach = function(client, bufnr)
+                local buf_opts = { buffer = bufnr, silent = true }
+                -- Gernal
+                general_on_attach(client, buf_opts)
+            end,
+        }
+    end,
+    -- C++
+    ["clangd"] = function()
+        lspconfig.clangd.setup {
+            init_options = {
+                clangdFileStatus = true
+            },
+            on_attach = function(client, bufnr)
+                local buf_opts = { buffer = bufnr, silent = true }
+                -- Gernal
+                general_on_attach(client, buf_opts)
+            end,
+            cmd = {
+                "clangd",
+                "--offset-encoding=utf-16",
+            },
+        }
+    end
 })
 

@@ -47,6 +47,38 @@ return require('packer').startup(function(use)
     use 'williamboman/mason.nvim'
     use 'neovim/nvim-lspconfig'
     use 'simrat39/rust-tools.nvim'
+    use {
+        'linrongbin16/lsp-progress.nvim',
+        config = function()
+            require('lsp-progress').setup()
+        end
+    }
+
+    -- integrate with lualine
+    use {
+        'nvim-lualine/lualine.nvim',
+        config = function()
+            require("lualine").setup({
+                sections = {
+                    lualine_a = { "mode" },
+                    lualine_b = { "filename" },
+                    lualine_c = {
+                        -- invoke `progress` here.
+                        require('lsp-progress').progress,
+                    },
+                }
+            })
+
+            -- listen lsp-progress event and refresh lualine
+            vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
+            vim.api.nvim_create_autocmd("User", {
+                group = "lualine_augroup",
+                pattern = "LspProgressStatusUpdated",
+                callback = require("lualine").refresh,
+            })
+        end
+    }
+
 
     -- Install Debugging
     use 'nvim-lua/plenary.nvim'
@@ -56,9 +88,9 @@ return require('packer').startup(function(use)
     -- Auto completation
     use { 'hrsh7th/nvim-cmp', config = [[require('nvim-cmp')]] }
     use { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp' }
-    use { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' }      -- buffer auto-completion
-    use { 'hrsh7th/cmp-path', after = 'nvim-cmp' }        -- path auto-completion
-    use { 'hrsh7th/cmp-cmdline', after = 'nvim-cmp' }     -- cmdline auto-completion
+    use { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' }  -- buffer auto-completion
+    use { 'hrsh7th/cmp-path', after = 'nvim-cmp' }    -- path auto-completion
+    use { 'hrsh7th/cmp-cmdline', after = 'nvim-cmp' } -- cmdline auto-completion
     use 'L3MON4D3/LuaSnip'
     use 'saadparwaiz1/cmp_luasnip'
 
@@ -68,7 +100,7 @@ return require('packer').startup(function(use)
     -- File manager
     use({
         "kyazdani42/nvim-tree.lua",
-        "kyazdani42/nvim-web-devicons",     -- optional, for file icons
+        "kyazdani42/nvim-web-devicons", -- optional, for file icons
     })
 
     -- telescope
